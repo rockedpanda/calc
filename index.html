@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="manifest" href="./manifest.json" />
-    <script src="js/vue.min.js"></script>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/element-ui.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/element-ui.js"></script>
     <title>加减法训练</title>
 </head>
 <body>
     <div id="main">
-        <h2> 加减法训练 <sapn @click="isSetting=true;">?</sapn></h2>
-        <div class="time">剩余时间: {{time}} 秒 <span @click="reload">重新开始</span><br /> 当前为第{{index}}题</div> 
+        <h2 class="flex-center">{{shownType}}训练<i class="spring"></i> <span @click="reload" style="font-size:0.6em;margin-right:0.3em;"><i class="el-icon-refresh"></i></span><span @click="isSetting=true;" style="font-size:0.6em;"><i class="el-icon-setting"></i></span></h2>
+        <div class="time">剩余时间: {{time}} 秒　　　当前为第{{index+1}}题</div> 
         <div class="question">{{curQuestion}} = <span class="userInput">　{{inputText}}　</span></div>
         <div class="answer" v-show="!isToStart">
             <div class="answer-item btn-number" v-for="(item, index) in shownChoices" :key="index"  :class="getBtnClass(item)" @click="selectAnswer(item)">
@@ -34,9 +36,9 @@
                     {{isCorrect(item)?'正确':'错误'}}</div>
             </div>
         </div>
-        <div class="action" @click="start" v-show="isToStart">开始</div>
+        <div class="action" @click="start" v-show="isToStart"><el-button type="primary" >开始</el-button></div>
         <audio src="./audio/bing.mp3" ref="audio"></audio>
-        <div class="settingPage" v-if="isSetting"> <sapn @click="isSetting=false;">关闭</sapn>
+        <div class="settingPage" v-if="isSetting"> <span @click="isSetting=false;"><i class="el-icon-close"></i>关闭</span>
             <div>题目类型: <select v-model="setting.type">
                 <option value="add">加法</option>
                 <option value="sub">减法</option>
@@ -44,7 +46,7 @@
             </select></div>
             <div>减法概率: <input type="number" v-model="setting.subRate" min="0" max="100">%</div>
 
-            <div>题目数量: <input type="number" v-model="setting.count" min="1" max="200"></div>
+            <div>最大数字: <input type="number" v-model="setting.count" min="1" max="200"></div>
 
             <div>时间限制: <input type="number" v-model="setting.time" min="1" max="300">秒</div>
         </div>
@@ -191,6 +193,14 @@
       },
       shownChoices:function(){
           return this.choices.slice(0);
+      },
+      shownType:function(){
+        let map = {
+          'add':'加法',
+          'sub':'减法',
+          'mix':'加减法'
+        };
+        return this.setting.count + '以内' + (map[this.setting.type]||'加减法');
       }
       
       // score:function(){

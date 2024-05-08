@@ -1,4 +1,4 @@
-const VERSION = "V1.0.3";
+const VERSION = "V1.0.4";
 const CACHE_NAME = 'calc'+VERSION;
 
 const CACHE_URLS = [ //缓存列表,列表中的文件不会更新,永远从缓存读取,直到本文件更新版本.
@@ -6,7 +6,11 @@ const CACHE_URLS = [ //缓存列表,列表中的文件不会更新,永远从缓�
     "audio/bing.mp3",
     "index.html",
     "js/vue.min.js",
+    "js/element-ui.js",
     "css/main.css",
+    "css/element-ui.css",
+    "css/fonts/element-icons.woff",
+    "css/fonts/element-icons.ttf",
 ];
 
 // 准备缓存列表

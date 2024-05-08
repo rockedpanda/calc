@@ -1,8 +1,12 @@
 html, body{
   font-size: calc(400vw / 75);
+  box-sizing: border-box;
 }
 input, select, option{
   font-size: calc(400vw / 75); 
+}
+span i{
+  cursor: pointer;
 }
 .question {
   font-size: 2em;
@@ -17,20 +21,22 @@ input, select, option{
   user-select: none;
 }
 .answer-item:active {
-  
   background-color: #00FF00;
 }
 .action{
+  text-align: center;
+}
+.action button{
   border-radius: 2em;
-  line-height: 2em;
+  line-height: 1em;
   color: #FFF;
   margin-top: 1em;
   height: 2em;
-  width: 8em;
+  width: 6em;
   text-align: center;
   font-size: 2em;
-  outline: 1px solid #000;
-  background-color: #0000FF;
+  /* outline: 1px solid #000; */
+  /* background-color: #0000FF; */
 }
 h2{
   line-height: 1em;
@@ -43,6 +49,9 @@ h2{
 .flex-center div{
   margin: 0 1em;
 }
+.spring{
+  flex-grow: 1;
+}
 .inputText{
   font-size: 2em;
   width: calc(100vw - 3em);
@@ -53,32 +62,33 @@ h2{
   box-shadow: 0 0.5vmin 1vmin rgba(0,0,0,0.4);
   text-align: center;
   font-size: 2em;
-  line-height: 23vmin;
+  line-height: 22vmin;
   display: flex;
   justify-items: center;
   align-items: center;
   justify-content: center;
 }
 .btn-number{
-  width: 23vmin;
-  height: 23vmin;
+  width: 22vmin;
+  height: 22vmin;
 }
 .btn-number-0{
   width: 48vmin;
-  height: 23vmin;
+  height: 22vmin;
   grid-area: m;
 }
 .btn-commit{
-  width: 23vmin;
+  width: 22vmin;
   height: 48vmin;
   margin: 0 2vmin 0;
   line-height: 1.2em;
 }
 .answer{
+  margin-top: 5vmin;
   display: grid;
-  gap: 1vmin 1vmin;
-  grid-template-columns: 23vmin 23vmin 23vmin 23vmin;
-  grid-template-rows: 23vmin 23vmin 23vmin 23vmin;
+  gap: 2vmin 2vmin;
+  grid-template-columns: 22vmin 22vmin 22vmin 22vmin;
+  grid-template-rows: 22vmin 22vmin 22vmin 22vmin;
   grid-template-areas:  'a b c d'
                         'e f g h'
                         'i j k l'
@@ -102,4 +112,5 @@ h2{
   height: 100%;
   z-index: 100;
   background-color: #FFF;
+  padding: 3vmin;
 }
