@@ -1,0 +1,105 @@
+html, body{
+  font-size: calc(400vw / 75);
+}
+input, select, option{
+  font-size: calc(400vw / 75); 
+}
+.question {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  line-height:2em;
+}
+.answer-item {
+  display: inline-block;
+  margin: 5px;
+  text-align: center;
+  user-select: none;
+}
+.answer-item:active {
+  
+  background-color: #00FF00;
+}
+.action{
+  border-radius: 2em;
+  line-height: 2em;
+  color: #FFF;
+  margin-top: 1em;
+  height: 2em;
+  width: 8em;
+  text-align: center;
+  font-size: 2em;
+  outline: 1px solid #000;
+  background-color: #0000FF;
+}
+h2{
+  line-height: 1em;
+}
+.flex-center{
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5em;
+}
+.flex-center div{
+  margin: 0 1em;
+}
+.inputText{
+  font-size: 2em;
+  width: calc(100vw - 3em);
+}
+
+.btn-number{
+  border-radius: 12vmin;
+  box-shadow: 0 0.5vmin 1vmin rgba(0,0,0,0.4);
+  text-align: center;
+  font-size: 2em;
+  line-height: 23vmin;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  justify-content: center;
+}
+.btn-number{
+  width: 23vmin;
+  height: 23vmin;
+}
+.btn-number-0{
+  width: 48vmin;
+  height: 23vmin;
+  grid-area: m;
+}
+.btn-commit{
+  width: 23vmin;
+  height: 48vmin;
+  margin: 0 2vmin 0;
+  line-height: 1.2em;
+}
+.answer{
+  display: grid;
+  gap: 1vmin 1vmin;
+  grid-template-columns: 23vmin 23vmin 23vmin 23vmin;
+  grid-template-rows: 23vmin 23vmin 23vmin 23vmin;
+  grid-template-areas:  'a b c d'
+                        'e f g h'
+                        'i j k l'
+                        'm m o l';
+}
+
+.userInput{
+  /* text-decoration: underline; */
+  width: 3em;
+  min-width: 3em;
+  color: #00F;
+  display: inline-block;
+  border-bottom: 1px solid #00F;
+}
+
+.settingPage{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: #FFF;
+}

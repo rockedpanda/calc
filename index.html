@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="manifest" href="./manifest.json" />
+    <script src="js/vue.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <title>加减法训练</title>
+</head>
+<body>
+    <div id="main">
+        <h2> 加减法训练 <sapn @click="isSetting=true;">?</sapn></h2>
+        <div class="time">剩余时间: {{time}} 秒 <span @click="reload">重新开始</span><br /> 当前为第{{index}}题</div> 
+        <div class="question">{{curQuestion}} = <span class="userInput">　{{inputText}}　</span></div>
+        <div class="answer" v-show="!isToStart">
+            <div class="answer-item btn-number" v-for="(item, index) in shownChoices" :key="index"  :class="getBtnClass(item)" @click="selectAnswer(item)">
+                <div>{{item}}</div>
+            </div>
+            <!-- <div class="flex-center" v-show="!isToStart">
+                <div class="pre" @click="index--">上一题</div>
+                <div class="next" @click="index++">下一题</div>
+            </div> -->
+        </div>
+        <div class="result" v-show="isToStart">
+            <!-- <div>开始时间: {{startTime}}</div> -->
+            <!-- <div>结束时间: {{endTime}}</div> -->
+            <div>用时: {{(-startTime + endTime)/1000}}</div>
+            <div>得分: {{score}}</div>
+            <div class="ansList">
+                <div v-for="(item, index) in answerList.slice(0, index)" :key="index"> {{item[0]}} {{item[1]}} {{item[2]}} =
+                    {{item[3]}}
+                    {{isCorrect(item)?'正确':'错误'}}</div>
+            </div>
+        </div>
+        <div class="action" @click="start" v-show="isToStart">开始</div>
+        <audio src="./audio/bing.mp3" ref="audio"></audio>
+        <div class="settingPage" v-if="isSetting"> <sapn @click="isSetting=false;">关闭</sapn>
+            <div>题目类型: <select v-model="setting.type">
+                <option value="add">加法</option>
+                <option value="sub">减法</option>
+                <option value="mix">加减法</option>
+            </select></div>
+            <div>减法概率: <input type="number" v-model="setting.subRate" min="0" max="100">%</div>
+
+            <div>题目数量: <input type="number" v-model="setting.count" min="1" max="200"></div>
+
+            <div>时间限制: <input type="number" v-model="setting.time" min="1" max="300">秒</div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+</body>
+<script>
+    let settingInfo = JSON.parse(localStorage.getItem('settingInfo'), 'null') || {
+            type:'add',
+            subRate: 65,
+            count: 100,
+            time: 60
+        };
+    let vm = new Vue({
+    el: '#main',
+    data: function () {
+      return {
+        answerList: [[0,0]],
+        isAnswering: true,
+        time: 0,
+        score: 0,
+        question: 0,
+        answer: [],
+        startTime: 0,
+        endTime:0,
+        index: 0,
+        choices:[7,8,9,'Del',4,5,6,'C',1,2,3,'提交','<',0,'>'],
+        inputText:'',
+        isSetting: false,
+        setting: settingInfo
+      }
+    },
+    methods: {
+        createQuestion: function () {
+            let type = 'add';
+            if(this.setting.type == 'add'){
+                type = 'add';
+            }else if(this.setting.type =='sub'){
+                type = 'sub';
+            }else if(this.setting.type == 'mix'){
+                type = (Math.random() > (+this.setting.subRate / 100)) ? 'add' : 'sub';
+            }
+            let q = ['', '', '', '']; //a + b = c
+            let max = +this.setting.count;
+            let a = Math.floor(Math.random() * max + 1);
+            q[0] = a;
+            q[1] = type == 'add' ? '+' : '-';
+            q[2] = Math.floor(Math.random() * (type=='add'?(max-a) : a));
+            return q;
+        },
+        start: function () {
+            this.time = 60;
+            this.answerList = [];
+            for (let i = 0; i < 200; i++) {
+                this.answerList.push(this.createQuestion());
+            }
+            this.startTime = new Date().getTime();
+            this.question = 1;
+            this.index = 0;
+            this.isAnswering = true;
+            this.refreshTime();
+        },
+      selectAnswer:function(number){
+        if(/\d/.test(number)){
+            this.numberClick(number);
+            return;
+        }
+        if('<' == number){
+            this.index--;
+            return;
+        }
+        if('>' == number){
+            this.index++;
+            return;
+        }
+        if('Del' == number){
+            this.inputText = this.inputText.slice(0,-1);
+            return;
+        }
+        if('C' == number){
+            this.inputText = '';
+            return;
+        }
+        let result = parseInt(this.inputText, 10)|| NaN;
+        this.answerList[this.index][3] = result;
+        this.answerList[this.index][4] = Date.now();
+        console.log('>', this.answerList[this.index].join(' '));
+        this.index++;
+        if(this.index>=this.answerList.length){
+          this.isAnswering = false;
+        }
+        this.$refs.audio.currentTime=0.2;
+        this.$refs.audio.play();
+      },
+      numberClick:function(n){
+        this.inputText = this.inputText + n;
+      },
+      refreshTime:function(){
+        setTimeout(()=>{
+          this.time--;
+          if(this.time>0){
+            this.refreshTime();
+          }else{
+            this.endTime = new Date().getTime();
+            this.isAnswering = false;
+            localStorage.setItem('lastPaper', JSON.stringify(this.answerList));
+          }
+        }, 1000);
+      },
+      isCorrect:function(answer){
+        if(answer[1] == '+'){
+          return answer[0] + answer[2] === answer[3];
+        }
+        if(answer[1] == '-'){
+          return answer[0] - answer[2] === answer[3];
+        }
+        return false;
+        //return answer[0] + answer[1] === 10;
+      },
+      reload:function(){
+        window.location.reload();
+      },
+      getBtnClass:function(item){
+        if(item=='提交'){
+            return 'btn-commit';
+        }
+        // if(item == 0){
+        //     return 'btn-number-0';
+        // }
+        return 'btn-number';
+      }
+    },
+    computed: {
+      questions: function(){
+        return this.answerList.map(x=>x[0]);
+      },
+      isToStart:function(){
+        return this.time===0;
+      },
+      curQuestion:function(){
+        return this.answerList[this.index].slice(0,3).join(' ');
+      },
+      shownChoices:function(){
+          return this.choices.slice(0);
+      }
+      
+      // score:function(){
+      //   return this.answerList.filter(x=>this.isCorrect(x)).length;
+      // }
+    },
+    watch: {
+      index: function (newVal, oldVal) {
+        this.score =  this.answerList.filter(x=>this.isCorrect(x)).length;
+        //if(newVal > oldVal){
+          this.inputText = this.answerList[newVal][3] || '';
+        //}
+      },
+      setting: {
+        handler:function(val){
+            localStorage.setItem('settingInfo', JSON.stringify(val));
+        },
+        deep: true
+      }
+    }
+  });
+
+  function bing(){
+    // 创建一个AudioContext对象
+    const audioContext = new AudioContext();
+    
+    // 创建一个振荡器节点（OscillatorNode）
+    const oscillator = audioContext.createOscillator();
+      
+    // 设置振荡器的类型为方波（square wave），并调整频率（Hz）和音量（amplitude）
+    oscillator.type = 'square';
+    oscillator.frequency.value = 2000; // 频率，可以根据需要调整
+    oscillator.amplitude.value = 1; // 音量，范围通常在0到1之间
+      
+    // 开始振荡器节点产生声音
+    oscillator.start();
+      
+    // 在一段时间后停止振荡器节点产生声音
+    setTimeout(() => {
+      oscillator.stop();
+    }, 500); // 500毫秒后停止声音，可以根据需要调整时长
+  }
+</script>
+<script>
+  if ('serviceWorker' in navigator && window.location.href.startsWith('https:')) {
+      window.addEventListener('load', function () {
+          navigator.serviceWorker.register('service.js')
+              .then(function (registration) {
+        //window.location.href = "index.html";
+      })
+              .catch(function (err) {
+                  console.log(err);
+        document.getElementById('main2').innerText = err.message;
+              });
+      });
+  }else{
+    if(document.getElementById('main2')){ 
+        document.getElementById('main2').innerText = '环境或者浏览器不支持PWA';
+    }
+}
+</script>
+</html>
