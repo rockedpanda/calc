@@ -1,10 +1,8 @@
-const VERSION = "V1.0.2";
+const VERSION = "V1.0.3";
 const CACHE_NAME = 'calc'+VERSION;
 
 const CACHE_URLS = [ //缓存列表,列表中的文件不会更新,永远从缓存读取,直到本文件更新版本.
-    "11补位.html",
     "144x144.png",
-    "20以内减法.html",
     "audio/bing.mp3",
     "index.html",
     "js/vue.min.js",
